@@ -1,1 +1,4 @@
 flask
+python-interface
+requests
+flask-cors
