@@ -3,3 +3,4 @@ python-interface
 requests
 flask-cors
 interface
+flask-marshmallow
