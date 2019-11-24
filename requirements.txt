@@ -5,3 +5,4 @@ flask-cors
 interface
 flask-marshmallow
 configparser
+pytest
