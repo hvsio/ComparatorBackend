@@ -4,6 +4,7 @@ from src.service.MarginSaverQuotesService import MarginSaverQuotesService
 from src.service.N1QuotesService import N1QuotesService
 
 app = Flask(__name__)
+
 n1QuotesService = N1QuotesService()
 bankSupplierService = BankSupplierService(MarginSaverQuotesService(), n1QuotesService)
 
@@ -22,7 +23,7 @@ def get_data_fe():
 
 @app.route('/available', methods=['GET'])
 def is_quote_service_available():
-    return n1QuotesService.areQuotesAvailable()
+    return n1QuotesService.are_quotes_available()
 
 
 if __name__ == '__main__':

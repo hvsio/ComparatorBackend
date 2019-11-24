@@ -45,7 +45,7 @@ class MarginSaverQuotesService(implements(IMarginSaverQuotes)):
                 fee = fee_1[0].get('sepa', '')
             else:
                 fee = fee_1[0].get('intl', '')
-        else: # in case that the bank fee is not added in scrapper config service.
+        else:  # in case that the bank fee is not added in scrapper config service.
             fee = 0
 
         for entry in responses:
