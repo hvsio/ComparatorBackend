@@ -41,7 +41,7 @@ class MarginSaverQuotesService(implements(IMarginSaverQuotes)):
         fee_1 = fee_response.json()
 
         if not len(fee_1) == 0:
-            if self.is_sepa_payment(from_country, to_country, from_currency.to_currency):
+            if self.is_sepa_payment(from_country, to_country, from_currency, to_currency):
                 fee = fee_1[0].get('sepa', '')
             else:
                 fee = fee_1[0].get('intl', '')

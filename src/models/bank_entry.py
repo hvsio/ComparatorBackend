@@ -24,9 +24,9 @@ class BankEntry:
         self.totalFee = fee_single_transaction * nr_transactions
         self.totalCost = BankEntry.calculate_total_cost(self.totalFee, volume, exchange_rate)
 
-    def to_JSON(self):
-        string = json.dumps(self, default=lambda o: getattr(o, '__dict__', str(o)))
-        return json.loads(string)
+    #def to_JSON(self):
+    #    string = json.dumps(self, default=lambda o: getattr(o, '__dict__', str(o)))
+    #    return json.loads(string)
 
     @staticmethod
     def calculate_total_cost(total_fee, volume, exchange_rate):
