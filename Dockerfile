@@ -4,4 +4,4 @@ WORKDIR /app
 RUN pip install -r requirements.txt
 EXPOSE 13022
 ENV PYTHONPATH="$PYTHONPATH:/app"
-CMD python ./src/controller.py cloud
+CMD python ./src/controllers/controller.py cloud

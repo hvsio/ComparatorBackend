@@ -24,9 +24,9 @@ steps:
     args: ['push', 'gcr.io/abiding-robot-255320/comparatorbackend:$SHORT_SHA']
 
   #Uses the container and replaces the existing one in Kubernetes
-  #- name: 'gcr.io/cloud-builders/kubectl'
-  #  id: Kubernetes deployment
-  #  args: ['set', 'image', 'deployment/scrapper-controller', 'comparatorbackend-sha256=gcr.io/abiding-robot-255320/comparatorbackend:$SHORT_SHA']
-  #  env:
-  #    - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-  #    - 'CLOUDSDK_CONTAINER_CLUSTER=scrapper-cluster'
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: Kubernetes deployment
+    args: ['set', 'image', 'deployment/comparator-backend', 'comparatorbackend-sha256=gcr.io/abiding-robot-255320/comparatorbackend:$SHORT_SHA']
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=scrapper-cluster'
