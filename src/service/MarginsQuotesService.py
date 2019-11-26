@@ -41,8 +41,8 @@ class MarginSaverQuotesService(implements(IMarginSaverQuotes)):
                                 nr_of_transactions):
         payload = {
             'country': from_country,
-            'fromCur': from_currency,
-            'toCur': to_currency
+            'fromCurrency': from_currency,
+            'toCurrency': to_currency
         }
         response = requests.get(self.margin_service_url + '/banksbuyrate', params=payload)
 
