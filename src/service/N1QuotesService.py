@@ -8,22 +8,24 @@ from interface import Interface
 import requests
 
 
-class IN1Quotes(Interface):
-    def get_quote(self, from_country_code, to_country_code, from_currency_code, to_currency_code, amount):
+class IN1QuotesService(Interface):
+    def get_quote(self, from_country_code, to_country_code, from_currency_code, to_currency_code, amount,
+                  nr_transactions):
         pass
 
     def are_quotes_available(self):
         pass
 
 
-class N1QuotesService(implements(IN1Quotes)):
+class N1QuotesService(implements(IN1QuotesService)):
     def __init__(self):
         Config.initialize()
         self.n1_api_url = Config.cloud('N1API') if (
                 len(sys.argv) > 1 and sys.argv[1] == 'cloud') else Config.dev(
             'N1API')
 
-    def get_quote(self, from_country_code, to_country_code, from_currency_code, to_currency_code, amount):
+    def get_quote(self, from_country_code, to_country_code, from_currency_code, to_currency_code, amount,
+                  nr_transactions):
         payload = {'fromCountryCode': from_country_code,
                    'toCountryCode': to_country_code,
                    'fromCurrencyCode': from_currency_code,
@@ -36,7 +38,9 @@ class N1QuotesService(implements(IN1Quotes)):
         if response.status_code == 503:
             return []
         # TODO create the bankentry with the response.
-        return BankEntry()
+        n1_quote = response.json()
+        return BankEntry('November First', n1_quote['ExchangeRate'], n1_quote['FeeAmount'], nr_transactions, amount,
+                  from_currency_code, to_country_code)
 
     def are_quotes_available(self):
         payload = {'fromCountryCode': 'DK',
