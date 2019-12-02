@@ -1,12 +1,11 @@
 from flask import Flask, request, json, Response
 from src.service.BankSupplierService import BankSupplierService
-from src.service.MarginsQuotesService import MarginSaverQuotesService
 from src.service.ScrapperControllerConnection import ScrapperConfigConnection
-from src.service.N1QuotesService import N1QuotesService
+from flask_cors import CORS
 from src.models.SepaCountries import SepaCountries
 
 app = Flask(__name__)
-
+CORS(app)
 bank_supplier_service = BankSupplierService()
 scrapper_connection = ScrapperConfigConnection()
 
