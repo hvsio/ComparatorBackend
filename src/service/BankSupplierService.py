@@ -1,5 +1,6 @@
 from interface import Interface, implements
 from flask import Response, json
+from src.models.SepaCountries import SepaCountries
 from src.models.bank_entry import BankEntrySchema
 from src.service.MarginsQuotesService import MarginSaverQuotesService
 from src.service.N1QuotesService import N1QuotesService
@@ -11,6 +12,9 @@ class IBankSupplierService(Interface):
         pass
 
     def are_quotes_available(self):
+        pass
+
+    def allowed_currencies(self, country_iso):
         pass
 
 
@@ -43,3 +47,7 @@ class BankSupplierService(implements(IBankSupplierService)):
 
     def are_quotes_available(self):
         return self.__N1QuoteService.are_quotes_available()
+
+    def allowed_currencies(self, country_iso):
+        response = self.__N1QuoteService.available_currencies(country_iso)
+        return response

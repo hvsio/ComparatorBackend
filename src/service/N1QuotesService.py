@@ -16,6 +16,9 @@ class IN1QuotesService(Interface):
     def are_quotes_available(self):
         pass
 
+    def available_currencies(self, country_iso):
+        pass
+
 
 class N1QuotesService(implements(IN1QuotesService)):
     def __init__(self):
@@ -37,10 +40,9 @@ class N1QuotesService(implements(IN1QuotesService)):
         response = requests.get(self.n1_api_url + '/quote', params=payload)
         if response.status_code == 503:
             return []
-        # TODO create the bankentry with the response.
         n1_quote = response.json()
         return BankEntry('November First', n1_quote['ExchangeRate'], n1_quote['FeeAmount'], nr_transactions, amount,
-                  from_currency_code, to_country_code)
+                         from_currency_code, to_country_code)
 
     def are_quotes_available(self):
         payload = {'fromCountryCode': 'DK',
@@ -59,5 +61,24 @@ class N1QuotesService(implements(IN1QuotesService)):
                 status=200)
         else:
             return Response(
-                response='service not available',
+                response='N1 service not available',
                 status=200)
+
+    def available_currencies(self, country_iso):
+        payload = {'countryCode': country_iso}
+        response = requests.get(self.n1_api_url + '/allowedCurrencies', params=payload)
+        if response.status_code == 200:
+            return Response(
+                response=json.dumps(response.json()),
+                status=200,
+                mimetype='application/json')
+        elif response.status_code == 400:
+            return Response(
+                response='wrong country iso or country not supported',
+                status=400,
+            )
+        else:
+            return Response(
+                response='N1 service not available',
+                status=503,
+            )

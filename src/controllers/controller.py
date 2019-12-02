@@ -37,7 +37,12 @@ def get_from_countries():
 
 @app.route('/allowedcurrencies', methods=['GET'])
 def get_allowed_currencies():
-    return scrapper_connection.get_currencies_with_response()
+    country_code = request.values.get('countryCode')
+    if country_code is None:
+        return Response(response='Error: null country',
+                        status=503)
+
+    return bank_supplier_service.allowed_currencies(country_code)
 
 
 if __name__ == '__main__':
