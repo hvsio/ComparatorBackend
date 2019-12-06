@@ -62,7 +62,7 @@ class N1QuotesService(implements(IN1QuotesService)):
         else:
             return Response(
                 response='N1 service not available',
-                status=200)
+                status=503)
 
     def available_currencies(self, country_iso):
         payload = {'countryCode': country_iso}
