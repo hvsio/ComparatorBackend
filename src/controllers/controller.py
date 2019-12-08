@@ -1,13 +1,13 @@
 from flask import Flask, request, json, Response
 from src.service.BankSupplierService import BankSupplierService
-from src.service.ScrapperControllerConnection import ScrapperConfigConnection
+from src.service.FeeCalculatorService import FeeCalculatorService
 from flask_cors import CORS
 from src.models.SepaCountries import SepaCountries
 
 app = Flask(__name__)
 CORS(app)
 bank_supplier_service = BankSupplierService()
-scrapper_connection = ScrapperConfigConnection()
+scrapper_connection = FeeCalculatorService()
 
 
 @app.route('/banksuppliers', methods=['GET'])
@@ -37,8 +37,10 @@ def get_from_countries():
 @app.route('/allowedcurrencies', methods=['GET'])
 def get_allowed_currencies():
     country_code = request.values.get('countryCode')
+    if not SepaCountries.__contains__(country_code):
+        return Response(response='Error: wrong country iso ')
     if country_code is None:
-        return Response(response='Error: null country',
+        return Response(response='Error: null country ',
                         status=503)
 
     return bank_supplier_service.allowed_currencies(country_code)

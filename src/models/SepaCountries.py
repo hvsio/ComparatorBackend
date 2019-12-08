@@ -14,10 +14,10 @@ SepaCountries = {
     "LT": "Lithuania",
     "LU": "Luxembourg",
     "MT": "Malta",
-    "MC": "Monaco",
+    # "MC": "Monaco", not used at N1
     "NL": "Netherlands",
     "PT": "Portugal",
-    "SM": "San Marino",
+    # "SM": "San Marino", not used at N1
     "SK": "Slovakia",
     "SV": "Slovenia",
     "ES": "Spain",

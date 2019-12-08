@@ -5,7 +5,7 @@ from src.models.bank_entry import BankEntry
 from interface import implements, Interface
 from src.environment.enviroment import Config
 from src.models.SepaCountries import SepaCountries
-from src.service.ScrapperControllerConnection import ScrapperConfigConnection
+from src.service.FeeCalculatorService import FeeCalculatorService
 
 import requests
 
@@ -23,14 +23,14 @@ class IMarginSaverQuotes(Interface):
 
 class MarginSaverQuotesService(implements(IMarginSaverQuotes)):
 
-    def __init__(self, scrapper_controller_connection=ScrapperConfigConnection()):
+    def __init__(self, fee_calculator_service=FeeCalculatorService()):
         Config.initialize()
 
         self.margin_service_url = Config.cloud('MARGIN_SAVER') if (
                 len(sys.argv) > 1 and sys.argv[1] == 'cloud') else Config.dev(
             'MARGIN_SAVER')
 
-        self.scrapper_config_connection = scrapper_controller_connection
+        self.fee_calculator_service = fee_calculator_service
 
     def get_margin_saver_quotes(self,
                                 from_country,
@@ -49,7 +49,7 @@ class MarginSaverQuotesService(implements(IMarginSaverQuotes)):
         responses = json.loads(response.text)
         bankSuppliers = []
 
-        transaction_fee_info = self.scrapper_config_connection.get_fees(from_country)
+        transaction_fee_info = self.fee_calculator_service.get_fees(from_country, from_currency)
 
         if not len(transaction_fee_info) == 0:
             if self.is_sepa_payment(from_country,
