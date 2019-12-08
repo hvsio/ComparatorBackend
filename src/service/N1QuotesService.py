@@ -66,7 +66,7 @@ class N1QuotesService(implements(IN1QuotesService)):
         else:
             return Response(
                 response='N1 service not available',
-                status=200)
+                status=503)
 
     def available_currencies(self, country_iso):
         # TODO we assume that the company is registered in Denmark for N1 quotes. We can not get quotes for Norwegian
