@@ -2,7 +2,7 @@ import sys
 
 from interface import implements
 from src.models.bank_entry import BankEntry
-from flask import Response, json
+from flask import Response, json, jsonify
 from src.environment.enviroment import Config
 from interface import Interface
 import requests
@@ -60,13 +60,10 @@ class N1QuotesService(implements(IN1QuotesService)):
         response = requests.get(self.n1_api_url + '/quote', params=payload)
 
         if response.status_code == 200:
-            return Response(
-                response='ok',
-                status=200)
+            return jsonify({"status": "ok"}), 200
+
         else:
-            return Response(
-                response='N1 service not available',
-                status=503)
+            return jsonify({"status": "N1 service not available"}), 503
 
     def available_currencies(self, country_iso):
         # TODO we assume that the company is registered in Denmark for N1 quotes. We can not get quotes for Norwegian
