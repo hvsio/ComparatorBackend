@@ -25,6 +25,9 @@ class FeeCalculatorService(implements(IFeeCalculatorService)):
 
     def get_fees(self, from_country, to_country, from_currency, to_currency):
         transaction_fee_info = requests.get(self.scrapper_config_url + '/fees/' + from_country).json()
+        if len(transaction_fee_info) == 0: # the case that we dont have a fee at scrapper controller
+            return 0
+
         margin_currency = transaction_fee_info[0].get('currency', '')
 
         if from_currency != margin_currency:
@@ -33,17 +36,10 @@ class FeeCalculatorService(implements(IFeeCalculatorService)):
             transaction_fee_info[0]['intl'] = transaction_fee_info[0].get('intl', '') * mid_rate
             transaction_fee_info[0]['currency'] = to_currency
 
-        if not len(transaction_fee_info) == 0:
-            if self.__is_sepa_payment(from_country,
-                                      to_country,
-                                      from_currency,
-                                      to_currency):
-                transaction_fee = transaction_fee_info[0].get('sepa', '')
-            else:
-                transaction_fee = transaction_fee_info[0].get('intl', '')
-        else:  # in case that the bank fee is not added in scrapper config service.
-            transaction_fee = 0
-        return transaction_fee
+        if self.__is_sepa_payment(from_country, to_country, from_currency, to_currency):
+            return transaction_fee_info[0].get('sepa', '')
+        else:
+            return transaction_fee_info[0].get('intl', '')
 
     def __get_midrate(self, from_currency, to_currency):
         url = self.midrate_api + '/latest?base='
