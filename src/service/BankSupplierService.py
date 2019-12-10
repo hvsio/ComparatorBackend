@@ -24,14 +24,20 @@ class BankSupplierService(implements(IBankSupplierService)):
         self.__N1QuoteService = n1_quote_service
 
     def get_supplier(self, from_country, to_country, from_currency, to_currency, volume, nr_transactions):
-        # TODO call asynchronous n1_suppliers and bank_supplier
-        bankSuppliers = []
-        bankSuppliers.append(self.__N1QuoteService.get_quote(from_country,
-                                                             to_country,
-                                                             from_currency,
-                                                             to_currency,
-                                                             volume,
-                                                             nr_transactions))
+        bankSuppliers = [self.__N1QuoteService.get_quote(from_country,
+                                                         to_country,
+                                                         from_currency,
+                                                         to_currency,
+                                                         volume,
+                                                         nr_transactions)]
+
+        # if N1 can not get quote we dont search for other banks.
+        if len(bankSuppliers) == 0:
+            return Response(
+                response=json.dumps({'status': 'service not available'}),
+                status=503,
+                mimetype='application/json')
+
         bankSuppliers.extend(self.__MarginSaverQuoteService.get_margin_saver_quotes(from_country,
                                                                                     from_currency,
                                                                                     to_country,

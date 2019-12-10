@@ -21,7 +21,7 @@ def get_data_fe():
 
     return response
 
-
+# checking if N1 can give us quotes
 @app.route('/available', methods=['GET'])
 def is_quote_service_available():
     return bank_supplier_service.are_quotes_available()
@@ -34,6 +34,7 @@ def get_from_countries():
                     mimetype='application/json')
 
 
+# getting allowed currencies from N1 allowedcurrencies endpoint.
 @app.route('/allowedcurrencies', methods=['GET'])
 def get_allowed_currencies():
     country_code = request.values.get('countryCode')
