@@ -64,6 +64,7 @@ class N1QuotesService(implements(IN1QuotesService)):
                 response=json.dumps({'status': 'ok'}),
                 status=200,
                 mimetype='application/json')
+
         else:
             return Response(
                 response=json.dumps({'status': 'not avaiable'}),
