@@ -39,6 +39,7 @@ class MarginSaverQuotesService(implements(IMarginSaverQuotes)):
                                 to_currency,
                                 volume,
                                 nr_of_transactions):
+
         payload = {
             'country': from_country,
             'fromCurrency': from_currency,
@@ -49,18 +50,7 @@ class MarginSaverQuotesService(implements(IMarginSaverQuotes)):
         responses = json.loads(response.text)
         bankSuppliers = []
 
-        transaction_fee_info = self.fee_calculator_service.get_fees(from_country, from_currency)
-
-        if not len(transaction_fee_info) == 0:
-            if self.is_sepa_payment(from_country,
-                                    to_country,
-                                    from_currency,
-                                    to_currency):
-                transaction_fee = transaction_fee_info[0].get('sepa', '')
-            else:
-                transaction_fee = transaction_fee_info[0].get('intl', '')
-        else:  # in case that the bank fee is not added in scrapper config service.
-            transaction_fee = 0
+        transaction_fee = self.fee_calculator_service.get_fees(from_country, to_country, from_currency, to_currency)
 
         for entry in responses:
             bank_offer = BankEntry(entry['name'],

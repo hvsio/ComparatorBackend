@@ -17,8 +17,10 @@ class BankEntry:
     def __init__(self, name, exchange_rate, fee_single_transaction, nr_transactions, volume, from_currency,
                  to_currency):
         self.name = name
+        # TODO fix this. November first uses indirect exchanges and Margin saver uses direct exchanges. /
+        # this calculation should be normalize.
         if not name == 'November First':
-            self.exchangeRate = 1/exchange_rate
+            self.exchangeRate = 1 / exchange_rate
         else:
             self.exchangeRate = exchange_rate
         self.toCurrency = to_currency

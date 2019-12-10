@@ -1,5 +1,6 @@
 from interface import Interface, implements
 from src.environment.enviroment import Config
+from src.models.SepaCountries import SepaCountries
 import sys
 import urllib
 from flask import request, json
@@ -8,7 +9,7 @@ import requests
 
 class IFeeCalculatorService(Interface):
 
-    def get_fees(self, country, currency):
+    def get_fees(self, from_country, to_country, from_currency, to_currency):
         pass
 
 
@@ -22,16 +23,27 @@ class FeeCalculatorService(implements(IFeeCalculatorService)):
                 len(sys.argv) > 1 and sys.argv[1] == 'cloud') else Config.dev(
             'EXCHANGE_RATE_API')
 
-    def get_fees(self, country, currency):
-        fees_response = requests.get(self.scrapper_config_url + '/fees/' + country).json()
-        margin_currency = fees_response[0].get('currency', '')
-        if currency != margin_currency:
-            mid_rate = self.__get_midrate(margin_currency, currency)
-            fees_response[0]['sepa'] = fees_response[0].get('sepa', '') * mid_rate
-            fees_response[0]['intl'] = fees_response[0].get('intl', '') * mid_rate
-            fees_response[0]['currency'] = currency
+    def get_fees(self, from_country, to_country, from_currency, to_currency):
+        transaction_fee_info = requests.get(self.scrapper_config_url + '/fees/' + from_country).json()
+        margin_currency = transaction_fee_info[0].get('currency', '')
 
-        return fees_response
+        if from_currency != margin_currency:
+            mid_rate = self.__get_midrate(margin_currency, from_currency)
+            transaction_fee_info[0]['sepa'] = transaction_fee_info[0].get('sepa', '') * mid_rate
+            transaction_fee_info[0]['intl'] = transaction_fee_info[0].get('intl', '') * mid_rate
+            transaction_fee_info[0]['currency'] = to_currency
+
+        if not len(transaction_fee_info) == 0:
+            if self.__is_sepa_payment(from_country,
+                                      to_country,
+                                      from_currency,
+                                      to_currency):
+                transaction_fee = transaction_fee_info[0].get('sepa', '')
+            else:
+                transaction_fee = transaction_fee_info[0].get('intl', '')
+        else:  # in case that the bank fee is not added in scrapper config service.
+            transaction_fee = 0
+        return transaction_fee
 
     def __get_midrate(self, from_currency, to_currency):
         url = self.midrate_api + '/latest?base='
@@ -49,3 +61,10 @@ class FeeCalculatorService(implements(IFeeCalculatorService)):
             print(E)
             return 1
         return exchangerate
+
+    def __is_sepa_payment(self, from_country, to_country, from_currency, to_currency):
+        if from_currency != to_currency != 'EUR':
+            return False
+        if not SepaCountries.__contains__(from_country) or not SepaCountries.__contains__(to_country):
+            return False
+        return True

@@ -61,12 +61,14 @@ class N1QuotesService(implements(IN1QuotesService)):
 
         if response.status_code == 200:
             return Response(
-                response='ok',
-                status=200)
+                response=json.dumps({'status': 'ok'}),
+                status=200,
+                mimetype='application/json')
         else:
             return Response(
-                response='N1 service not available',
-                status=503)
+                response=json.dumps({'status': 'not avaiable'}),
+                status=503,
+                mimetype='application/json')
 
     def available_currencies(self, country_iso):
         # TODO we assume that the company is registered in Denmark for N1 quotes. We can not get quotes for Norwegian
