@@ -32,7 +32,7 @@ class BankSupplierService(implements(IBankSupplierService)):
                                                          nr_transactions)]
 
         # if N1 can not get quote we dont search for other banks.
-        if len(bankSuppliers) == 0:
+        if not bankSuppliers[0]:
             return Response(
                 response=json.dumps({'status': 'service not available'}),
                 status=503,
