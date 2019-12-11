@@ -21,6 +21,7 @@ def get_data_fe():
 
     return response
 
+
 # checking if N1 can give us quotes
 @app.route('/available', methods=['GET'])
 def is_quote_service_available():
